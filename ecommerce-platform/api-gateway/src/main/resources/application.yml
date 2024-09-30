@@ -1,4 +1,9 @@
 spring:
+  security:
+    oauth2:
+      resource server:
+        jwt:
+          jwk-set-uri: "http://localhost:8080/realms/master/protocol/openid-connect/certs"
   application:
     name: "api-gateway"
   cloud:
@@ -8,7 +13,7 @@ spring:
           enabled: true
           lower-case-service-id: true
 server:
-  port: 8080
+  port: 9090
 eureka:
   instance:
     preferIpAddress: true
