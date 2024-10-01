@@ -15,6 +15,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  sql:
+    init:
+      mode: always
 server:
   port: 8081
 eureka:
@@ -35,3 +38,9 @@ management:
       show-details: "always"
 
 
+keycloak:
+  url:
+  realm:
+  client:
+    id:
+    secret:
