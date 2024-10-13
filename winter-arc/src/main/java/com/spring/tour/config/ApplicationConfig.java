@@ -6,9 +6,6 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -42,21 +39,20 @@ public class ApplicationConfig implements
         return mailSender;
     }
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer properties() {
-        PropertySourcesPlaceholderConfigurer pspc
-                = new PropertySourcesPlaceholderConfigurer();
-        Resource[] resources = new ClassPathResource[]
-                {new ClassPathResource("foo.properties")};
-        pspc.setLocations(resources);
-        pspc.setIgnoreUnresolvablePlaceholders(true);
-        return pspc;
-    }
+//    @Bean
+//    public static PropertySourcesPlaceholderConfigurer properties() {
+//        PropertySourcesPlaceholderConfigurer pspc
+//                = new PropertySourcesPlaceholderConfigurer();
+//        Resource[] resources = new ClassPathResource[]
+//                {new ClassPathResource("foo.properties")};
+//        pspc.setLocations(resources);
+//        pspc.setIgnoreUnresolvablePlaceholders(true);
+//        return pspc;
+//    }
 
     @Bean
     public FilterRegistrationBean<RequestResponseFilter> loggingFilter() {
-        FilterRegistrationBean<RequestResponseFilter> registrationBean
-                = new FilterRegistrationBean<>();
+        FilterRegistrationBean<RequestResponseFilter> registrationBean = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(new RequestResponseFilter());
         registrationBean.addUrlPatterns("/spring-app/homepage");

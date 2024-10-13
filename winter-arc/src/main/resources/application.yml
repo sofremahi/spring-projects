@@ -1,9 +1,13 @@
 spring:
+  web:
+    resources:
+      add-mappings: true
   application:
     name: "spring features"
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
   sql:
     init:
       mode: always
