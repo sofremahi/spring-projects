@@ -53,13 +53,22 @@ public class UserServiceImpl implements UserService {
     public Object getCurrentUserProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication.getPrincipal() instanceof AnonymousAuthenticationToken)) {
-            Users user = usersRepo.findByEmail(authentication.getName()).orElseThrow(() ->
-                    new UsernameNotFoundException("User not found"));
+            Users user = usersRepo.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("recruiter"))) {
                 return recruiterProfileRepo.findById((long) user.getUserId()).orElse(new RecruiterProfile());
             } else {
                 return jobSeekerProfileRepo.findById((long) user.getUserId()).orElse(new JobSeekerProfile());
             }
+        }
+        return null;
+    }
+
+    @Override
+    public Users getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication.getPrincipal() instanceof AnonymousAuthenticationToken)) {
+            String username = authentication.getName();
+            return usersRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
         }
         return null;
     }

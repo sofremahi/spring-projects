@@ -43,7 +43,7 @@ public class UsersController {
             return "register";
         } else {
             userService.addNewUser(users);
-            return "dashboard";
+            return "login";
         }
     }
 
@@ -58,6 +58,6 @@ public class UsersController {
         if (authentication != null) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
-        return "redirect:/homepage";
+        return "redirect:/spring-app/homepage";
     }
 }

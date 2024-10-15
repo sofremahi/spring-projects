@@ -24,7 +24,7 @@ public class JobSeekerProfile {
     private String employmentType;
     private String resume;
     @Column(nullable = true , length = 64)
-    private String profilePhoto;
+    private String photosImagePath;
    @OneToMany(targetEntity = Skills.class , cascade = CascadeType.ALL , mappedBy = "jobSeekerProfile")
 private List<Skills> skills;
  }

@@ -21,7 +21,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         boolean recruiter = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("recruiter"));
         boolean jobSeeker = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("job seeker"));
         if (recruiter||jobSeeker) {
-            response.sendRedirect("/dashboard/");
+            response.sendRedirect("/spring-app/dashboard");
         }
     }
 }

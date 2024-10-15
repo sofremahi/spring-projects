@@ -21,5 +21,5 @@ public class RecruiterProfile {
     private String state;
     private String company;
     @Column(nullable = true, length = 64)
-    private String profilePhoto;
+    private String photosImagePath;
 }

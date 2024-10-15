@@ -9,4 +9,6 @@ void addNewUser(Users users);
 Optional<Users> findByEmail(String email);
 
     Object getCurrentUserProfile();
+
+    Users getCurrentUser();
 }
