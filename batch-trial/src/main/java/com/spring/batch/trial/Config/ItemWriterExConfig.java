@@ -3,7 +3,7 @@ package com.spring.batch.trial.Config;
 import com.spring.batch.trial.domain.Product;
 import com.spring.batch.trial.domain.ProductItemPreparedStatementSetter;
 import com.spring.batch.trial.domain.ProductRowMapper;
-import com.spring.batch.trial.processor.MyCustomProcessor;
+import com.spring.batch.trial.processor.CustomNullProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -49,7 +49,7 @@ public class ItemWriterExConfig {
     }
 
     @Bean
-    public FlatFileItemWriter<Product> flatFileItemWriter() throws Exception {
+    public FlatFileItemWriter<Product> flatFileItemWriter()  {
         FlatFileItemWriter<Product> itemWriter = new FlatFileItemWriter<>();
         itemWriter.setResource(new FileSystemResource("src/main/resources/data/products-output.csv"));
         DelimitedLineAggregator<Product> lineAggregator = new DelimitedLineAggregator<>();
@@ -62,7 +62,7 @@ public class ItemWriterExConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter<Product> jdbcBatchItemWriter() throws Exception {
+    public JdbcBatchItemWriter<Product> jdbcBatchItemWriter()  {
         JdbcBatchItemWriter<Product> itemWriter = new JdbcBatchItemWriter<>();
         itemWriter.setDataSource(dataSource);
         itemWriter.setSql("insert into product_output values(?,?,?,?)");
@@ -71,7 +71,7 @@ public class ItemWriterExConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter<Product> jdbcBatchItemWriterNameParameters() throws Exception {
+    public JdbcBatchItemWriter<Product> jdbcBatchItemWriterNameParameters()  {
         JdbcBatchItemWriter<Product> itemWriter = new JdbcBatchItemWriter<>();
         itemWriter.setDataSource(dataSource);
         itemWriter.setSql("insert into product_output values(:id,:name,:description,:price)");
@@ -81,7 +81,7 @@ public class ItemWriterExConfig {
 
     @Bean
     public ItemProcessor<Product, Product> itemProcessor() {
-        return new MyCustomProcessor();
+        return new CustomNullProcessor();
     }
 
     @Bean
@@ -98,7 +98,7 @@ public class ItemWriterExConfig {
 
     @Bean
     public Step chunkStepThird(JobRepository jobRepository, PlatformTransactionManager transactionManager) throws Exception {
-        return new StepBuilder("stepChunk2", jobRepository).<Product, Product>chunk(3, transactionManager).reader(jdbcPagingItemReaderForChunk())
+        return new StepBuilder("stepChunk3", jobRepository).<Product, Product>chunk(3, transactionManager).reader(jdbcPagingItemReaderForChunk())
                 .writer(jdbcBatchItemWriterNameParameters()).build();
     }
 
@@ -107,6 +107,5 @@ public class ItemWriterExConfig {
     public Job chunkJobOne(JobRepository jobRepository, Step chunkStepOne, Step chunkStepTwo, Step chunkStepThird) {
         return new JobBuilder("jobChunk1", jobRepository).start(chunkStepOne).next(chunkStepTwo).next(chunkStepThird).build();
     }
-
 
 }

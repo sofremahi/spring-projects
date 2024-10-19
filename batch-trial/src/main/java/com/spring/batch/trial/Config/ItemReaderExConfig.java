@@ -3,6 +3,8 @@ package com.spring.batch.trial.Config;
 import com.spring.batch.trial.domain.Product;
 import com.spring.batch.trial.domain.ProductFieldSetMapper;
 import com.spring.batch.trial.domain.ProductRowMapper;
+import com.spring.batch.trial.listener.SkipListener;
+import com.spring.batch.trial.listener.SkipListenerImpl;
 import com.spring.batch.trial.reader.ProductNameItemReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -10,11 +12,13 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +34,8 @@ import java.util.Objects;
 @Configuration
 @RequiredArgsConstructor
 public class ItemReaderExConfig {
+    private final SkipListener skipListener;
+    private final SkipListenerImpl skipListenerImpl;
 
     private final DataSource dataSource;
 
@@ -61,7 +67,7 @@ public class ItemReaderExConfig {
     }
 
     @Bean
-    public ItemReader<Product> jdbcCurserItemReader() throws Exception {
+    public ItemReader<Product> jdbcCurserItemReader() {
         JdbcCursorItemReader<Product> itemReader = new JdbcCursorItemReader<>();
         itemReader.setDataSource(dataSource);
         itemReader.setSql("select * from product order by id");
@@ -109,11 +115,24 @@ public class ItemReaderExConfig {
 //                        System.out.println("chunk processing ended");
 //                    }
 //                })
+                .faultTolerant()
+                .skip(FlatFileParseException.class)
+                .skip(NullPointerException.class)
+//                .skip(Throwable.class)
+//                .skip(Exception.class)
+//                .skipLimit(Integer.MAX_VALUE)
+                .skipPolicy(new AlwaysSkipItemSkipPolicy())
+//                todo:what ever number that is inside the retry limit is will be reduced by 1 for retrying the processing
+//                 but will stay the same to retry the writing
+                .retryLimit(2)
+                .retry(Throwable.class)
+//                .listener(skipListenerImpl)
+                .listener(skipListener)
                 .build();
     }
 
     @Bean
-    public Step chunkThirdStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) throws Exception {
+    public Step chunkThirdStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("chunkStep 3", jobRepository).<Product, Product>chunk(3, transactionManager).reader(jdbcCurserItemReader()).writer((chunk -> {
             System.out.println("chunk processing started");
             chunk.forEach(System.out::println);
@@ -133,7 +152,7 @@ public class ItemReaderExConfig {
 
 
     @Bean
-    public Job chunkFirstJob(JobRepository jobRepository, Step chunkFirstStep, Step chunkSecondStep, Step chunkThirdStep) throws Exception {
+    public Job chunkFirstJob(JobRepository jobRepository, Step chunkFirstStep, Step chunkSecondStep, Step chunkThirdStep) {
         return new JobBuilder("chunkJob 1", jobRepository).start(chunkFirstStep).next(chunkSecondStep).next(chunkThirdStep).build();
     }
 }
