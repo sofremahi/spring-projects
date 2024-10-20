@@ -21,5 +21,11 @@ public class RecruiterProfile {
     private String state;
     private String company;
     @Column(nullable = true, length = 64)
-    private String photosImagePath;
+    private String profilePhoto;
+
+    public String getPhotosImagePath() {
+        if (profilePhoto == null) return null;
+        return "/photos/recruiter/" + userAccountId + "/" + profilePhoto;
+    }
+
 }

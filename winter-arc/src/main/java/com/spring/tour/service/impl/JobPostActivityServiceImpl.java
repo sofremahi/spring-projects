@@ -5,10 +5,11 @@ import com.spring.tour.entity.RecruiterJobsDto;
 import com.spring.tour.repository.JobPostActivityRepo;
 import com.spring.tour.service.JobPostActivityService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class JobPostActivityServiceImpl implements JobPostActivityService {
     private final JobPostActivityRepo jobPostActivityRepo;
 
     @Override
-    public JobPostActivity addNEw(JobPostActivity jobPostActivity) {
+    public JobPostActivity addNew(JobPostActivity jobPostActivity) {
         return jobPostActivityRepo.save(jobPostActivity);
     }
 
@@ -30,5 +31,13 @@ public class JobPostActivityServiceImpl implements JobPostActivityService {
         return jobPostActivityRepo.findById((long) id).orElseThrow(() ->
                 new RuntimeException("job not found"));
 
+    }
+    public List<JobPostActivity> getAll() {
+        return jobPostActivityRepo.findAll();
+    }
+
+    public List<JobPostActivity> search(String job, String location, List<String> type, List<String> remote, LocalDate searchDate) {
+        return Objects.isNull(searchDate) ? jobPostActivityRepo.searchWithoutDate(job, location, remote,type) :
+                jobPostActivityRepo.search(job, location, remote, type, searchDate);
     }
 }
