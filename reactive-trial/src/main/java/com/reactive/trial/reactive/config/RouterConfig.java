@@ -3,13 +3,9 @@ package com.reactive.trial.reactive.config;
 import com.reactive.trial.reactive.common.ErrorResponseDto;
 import com.reactive.trial.reactive.exception.InvalidInputException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.reactive.function.server.*;
 import reactor.core.publisher.Mono;
 
 import java.util.function.BiFunction;
@@ -19,12 +15,21 @@ import java.util.function.BiFunction;
 public class RouterConfig {
     private final MathRequestHandler mathRequestHandler;
 
-
     @Bean
-    public RouterFunction<ServerResponse> routerFunction() {
+    public RouterFunction<ServerResponse> highLevelRouter() {
         return RouterFunctions.route()
-                .GET("router/table/{input}", mathRequestHandler::tableHandler)
-                .POST("router/multiply" ,mathRequestHandler::multiplyHandler )
+                .path("/router", this::routerFunction)
+                .build();
+    }
+
+    //   todo: this uri s will be having suffix as router/
+//@Bean
+    private RouterFunction<ServerResponse> routerFunction() {
+        return RouterFunctions.route()
+                .GET("table/{input}", RequestPredicates.all(), mathRequestHandler::tableHandler)
+                .POST("multiply", mathRequestHandler::multiplyHandler)
+                .GET("divide/{a}/{b}", mathRequestHandler::divideHandler)
+                .GET("addition/{a}/{b}", mathRequestHandler::additionHandler)
                 .onError(InvalidInputException.class, tableHandler())
                 .build();
     }

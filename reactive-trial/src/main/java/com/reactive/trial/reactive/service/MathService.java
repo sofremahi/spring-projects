@@ -13,7 +13,7 @@ import java.time.Duration;
 @Service
 public class MathService {
     public Flux<ResponseDto<Integer>> mathTable(int i) {
-        return Flux.generate(() -> 0, (integer, responseDtoSynchronousSink) -> {
+        return Flux.generate(() -> 1, (integer, responseDtoSynchronousSink) -> {
 
                             if (i > 99 || i < -100) {
                                 responseDtoSynchronousSink.error(new InvalidInputException("number must be above -100 and below 99", 400, "invalid input"));
