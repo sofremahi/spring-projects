@@ -1,11 +1,11 @@
 package com.reactive.trial.reactive.service;
 
 import com.reactive.trial.reactive.dto.ProductDto;
-import com.reactive.trial.reactive.entity.Product;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-
+@Service
 public interface ProductService {
-    public Mono<ProductDto> createProduct(Mono<ProductDto> productDto);
+     Mono<ProductDto> createProduct(Mono<ProductDto> productDto);
 
-    Mono<Product> getProduct(String id);
+     Mono<ProductDto> getProduct(String id);
 }

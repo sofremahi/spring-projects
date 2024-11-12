@@ -36,7 +36,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -57,14 +56,26 @@
 			<artifactId>javafaker</artifactId>
 			<version>${faker.version}</version>
 		</dependency>
+		<!-- R2DBC H2 for reactive DB access -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+			<groupId>io.r2dbc</groupId>
+			<artifactId>r2dbc-h2</artifactId>
+
 		</dependency>
+
+
+		<!-- H2 Database for the reactive application -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+
+		</dependency>
+
+		<!-- Spring Boot starter for R2DBC support -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-r2dbc</artifactId>
+			<version>2.7.6</version>
 		</dependency>
 	</dependencies>
 

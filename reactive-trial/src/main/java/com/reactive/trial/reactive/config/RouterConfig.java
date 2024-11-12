@@ -23,7 +23,6 @@ public class RouterConfig {
     }
 
     //   todo: this uri s will be having suffix as router/
-//@Bean
     private RouterFunction<ServerResponse> routerFunction() {
         return RouterFunctions.route()
                 .GET("table/{input}", RequestPredicates.all(), mathRequestHandler::tableHandler)

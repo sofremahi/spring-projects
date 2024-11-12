@@ -5,15 +5,14 @@ import com.reactive.trial.reactive.entity.Product;
 import com.reactive.trial.reactive.repo.ProductRepo;
 import com.reactive.trial.reactive.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
-
+@Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
-
-
     public Mono<ProductDto> createProduct(Mono<ProductDto> productDto) {
         return productDto
                 .map(item -> {
@@ -24,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
                     product.setPrice(item.getPrice());
                     return product;
                 })
-                .flatMap(this.productRepo::insert)
+                .flatMap(this.productRepo::save)
                 .map(item -> {
                     ProductDto pDto = new ProductDto();
                     pDto.setName(item.getName());
@@ -33,7 +32,12 @@ public class ProductServiceImpl implements ProductService {
                 });
     }
 
-    public Mono<Product> getProduct(String id) {
-        return productRepo.findById(id);
+    public Mono<ProductDto> getProduct(String id) {
+        return productRepo.findById(id).map(i->{
+            ProductDto pDto = new ProductDto();
+            pDto.setName(i.getName());
+            pDto.setPrice(i.getPrice());
+            return pDto;
+        });
     }
 }
