@@ -10,8 +10,7 @@ spring:
   sql:
     init:
       mode: always
-
-logging:
+logging :
   level:
     org.springframework.data.r2dbc.core.DatabaseClient: DEBUG
 
