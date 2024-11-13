@@ -22,8 +22,8 @@ public class ProductController {
     }
 
     @GetMapping("/get/{id}")
-    public Mono<ProductDto> getProduct(@PathVariable Long id) {
-        return productService.getProduct(id.toString());
+    public Mono<ProductDto> getProduct(@PathVariable String id) {
+        return productService.getProduct(id);
     }
 
 }

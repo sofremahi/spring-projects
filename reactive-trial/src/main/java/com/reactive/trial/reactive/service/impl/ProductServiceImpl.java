@@ -5,25 +5,29 @@ import com.reactive.trial.reactive.entity.Product;
 import com.reactive.trial.reactive.repo.ProductRepo;
 import com.reactive.trial.reactive.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
+    private final R2dbcEntityTemplate r2dbcEntityTemplate;
+
     public Mono<ProductDto> createProduct(Mono<ProductDto> productDto) {
         return productDto
                 .map(item -> {
-                    UUID uuid = UUID.randomUUID();
                     Product product = new Product();
-                    product.setId(uuid.toString());
+                    product.setId(UUID.randomUUID().toString());
+                    System.out.println("product id: " + product.getId());
                     product.setName(item.getName());
                     product.setPrice(item.getPrice());
                     return product;
                 })
-                .flatMap(this.productRepo::save)
+                .flatMap(r2dbcEntityTemplate::insert)
                 .map(item -> {
                     ProductDto pDto = new ProductDto();
                     pDto.setName(item.getName());

@@ -7,16 +7,10 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2-console
-#  webflux:
-#    base-path: /api
-  application:
-    name: reactive-h2-app
   sql:
     init:
-      platform: h2
+      mode: always
 
-# For logging SQL queries (optional, but helpful for debugging)
 logging:
   level:
     org.springframework.data.r2dbc.core.DatabaseClient: DEBUG
